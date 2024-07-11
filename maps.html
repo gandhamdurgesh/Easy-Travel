@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Finder with OpenStreetMap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+        .controls {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <input id="from" type="text" placeholder="From Location">
+        <input id="to" type="text" placeholder="To Location">
+        <button onclick="calculateRoute()">Get Route</button>
+        
+
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        let map = L.map('map').setView([20.5937, 78.9629], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        let control = L.Routing.control({
+            waypoints: [],
+            geocoder: L.Control.Geocoder.nominatim(),
+            routeWhileDragging: true
+        }).addTo(map);
+
+        function calculateRoute() {
+            let from = document.getElementById('from').value;
+            let to = document.getElementById('to').value;
+
+            L.Control.Geocoder.nominatim().geocode(from, function(fromResults) {
+                if (fromResults.length > 0) {
+                    let fromLatLng = fromResults[0].center;
+
+                    L.Control.Geocoder.nominatim().geocode(to, function(toResults) {
+                        if (toResults.length > 0) {
+                            let toLatLng = toResults[0].center;
+
+                            control.setWaypoints([
+                                L.latLng(fromLatLng),
+                                L.latLng(toLatLng)
+                            ]);
+                        } else {
+                            alert('Destination not found: ' + to);
+                        }
+                    });
+                } else {
+                    alert('Starting location not found: ' + from);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

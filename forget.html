@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forget Account</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 270px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+       
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"], input[type="password"], input[type="email"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            font-size: 16px;
+                        
+        }
+        .otp{
+            width: 100px;
+            height: 20px;
+            position: relative;
+            left: 35%;
+        }
+       
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+      <form>
+        <h2>Forget Password</h2>
+
+        <input type="text" name="phone number" placeholder="Phone number*" maxlength="10" required />
+        <input  type="button" href="otp.html" value="Get Otp" class="otp">
+        <br>
+       
+        <!-- <input type="number" placeholder="OTP" maxlength="6" required />
+        <br>
+
+        <input type="button" value="verify-otp" class="verify-otp" > -->
+      </form>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const phoneNumberInput = document.getElementById('phoneNumber');
+    const getOtpButton = document.getElementById('getOtpButton');
+    const otpInput = document.getElementById('otp');
+    const submitButton = document.querySelector('input[type="submit"]');
+
+    getOtpButton.addEventListener('click', () => {
+        const phoneNumber = phoneNumberInput.value;
+
+        if (phoneNumber.length === 10) {
+            fetch('/api/get-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ phoneNumber })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    otpInput.disabled = false;
+                    submitButton.disabled = false;
+                    alert('OTP sent successfully!');
+                } else {
+                    alert('Failed to send OTP. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        } else {
+            alert('Please enter a valid 10-digit phone number.');
+        }
+    });
+
+    document.getElementById('forgetPasswordForm').addEventListener('submit', event => {
+        event.preventDefault();
+
+        const phoneNumber = phoneNumberInput.value;
+        const otp = otpInput.value;
+
+        fetch('/api/verify-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ phoneNumber, otp })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('OTP verified successfully! You can now reset your password.');
+                // Redirect to password reset page or show password reset form
+            } else {
+                alert('Invalid OTP. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+
+      </script>
+
+</body>
+</html>

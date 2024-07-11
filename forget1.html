@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            background-image: url(https://media.istockphoto.com/id/1402686819/vector/cyber-security-and-data-protection-key-icon-future-technology-for-verification-abstract-high.jpg?s=612x612&w=0&k=20&c=Yta2gNuww24b5Go_DLqGkkLvTouZ5OEISHRNERBeHD0=);
+            background-position: center;
+            background-size: 100%;
+
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        
+        }
+        .container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .container input[type="email"],
+        .container input[type="text"],
+        .container input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .container input[type="button"],
+        .container input[type="submit"] {
+            width: 40%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background-color: #3441f5;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+        }
+        .container input[type="button"]:hover,
+        .container input[type="submit"]:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Verification Form</h2>
+        <form id="verificationForm" onsubmit="return false;">
+            <label for="mailId">Mail ID</label>
+            <input type="email" id="mailId" name="mailId" required oninput="checkEmail()">
+
+            <input type="button" id="verifyButton" value="Verify" onclick="verifyEmail()">
+            <p id="notification" style="color: red; display: none;">Please enter a valid email address.</p>
+
+            <label for="otp" id="otpLabel" style="display: none;">OTP</label>
+            <input type="text" id="otp" name="otp" maxlength="4" pattern="\d{4}" required style="display: none;" oninput="checkOtp()">
+
+            <input type="button" id="submitButton" value="Submit" style="display: none;" onclick="showPasswordFields()">
+
+            <label for="newPassword" id="newPasswordLabel" style="display: none;">New Password</label>
+            <input type="password" id="newPassword" name="newPassword"  placeholder="Enter your new password" required style="display: none;" oninput="checkPasswords()">
+
+            <label for="reenterPassword" id="reenterPasswordLabel" style="display: none;">Re-enter Password</label>
+            <input type="password" id="reenterPassword" name="reenterPassword"  placeholder="Re-enter your new password" required style="display: none;" oninput="checkPasswords()">
+
+            <input type="button" id="confirmButton" value="Confirm" style="display: none;" onclick="confirmPasswords()">
+      
+            
+            
+            <p id="passwordNotification" style="color: red; display: none;">Password must be at least 4 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character. Both passwords must match.</p>
+        
+        </form>
+    </div>
+
+    <script>
+    
+        function checkEmail() {
+    const email = document.getElementById('mailId').value;
+    const verifyButton = document.getElementById('verifyButton');
+    const notification = document.getElementById('notification');
+
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+    if (emailPattern.test(email)) {
+        verifyButton.style.display = 'block';
+        notification.style.display = 'none';
+    } else {
+        verifyButton.style.display = 'none';
+        notification.style.display = 'block';
+    }
+}
+
+       
+function verifyEmail() {
+    alert("Verification email sent to your Mail ID!");
+    document.getElementById('otpLabel').style.display = 'block';
+    document.getElementById('otp').style.display = 'block';
+    document.getElementById('submitButton').style.display = 'block';
+}
+
+
+        function checkOtp() {
+            const otp = document.getElementById('otp').value;
+            const submitButton = document.getElementById('submitButton');
+            if (/^\d{4}$/.test(otp)) {
+                submitButton.style.display = 'block';
+            } else {
+                submitButton.style.display = 'none';
+            }
+        }
+
+        function showPasswordFields() {
+            document.getElementById('newPasswordLabel').style.display = 'block';
+            document.getElementById('newPassword').style.display = 'block';
+            document.getElementById('reenterPasswordLabel').style.display = 'block';
+            document.getElementById('reenterPassword').style.display = 'block';
+            document.getElementById('confirmButton').style.display = 'block';
+        }
+
+
+function checkPasswords() {
+    const newPassword = document.getElementById('newPassword').value;
+    const reenterPassword = document.getElementById('reenterPassword').value;
+    const passwordNotification = document.getElementById('passwordNotification');
+    const confirmButton = document.getElementById('confirmButton');
+
+    const passwordPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[a-z\d!@#$%^&*]{6,}$/;
+
+if (newPassword === reenterPassword && passwordPattern.test(newPassword)) {
+    confirmButton.style.display = 'block';
+    passwordNotification.style.display = 'none';
+} else {
+    confirmButton.style.display = 'none';
+    if (newPassword !== reenterPassword) {
+        passwordNotification.textContent = "Passwords do not match.";
+    } else if (!passwordPattern.test(newPassword)) {
+        passwordNotification.textContent = "Password must be at least 6 characters long and include at least one lowercase letter, one number, and one special character.";
+    }
+    passwordNotification.style.display = 'block'
+    }
+}
+
+function confirmPasswords() {
+    alert("Passwords match and meet the criteria!");
+}
+    </script>
+</body>
+</html>
